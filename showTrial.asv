@@ -1,0 +1,71 @@
+function Exp = showTrial(Exp, tr)
+
+stimDur = 85;
+ITI = [21 42 63 85];
+mondRate = 8; % numbers of frames to present each mondrian
+checkFrames = [36 37];
+
+% Present the 1 sec of Mondrians and checkerboard 
+indxs = randperm(length(Exp.stimuli.mondrianTexVector));
+indxs = Exp.stimuli.mondrianTexVector(indxs(1:10));
+
+countMond = 1; % counter for the selection of mondrians
+
+for flp = 1 : stimDur
+    
+    % Draw frames for both eyes
+    Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
+    Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
+
+    % Draw the mondrians
+    % Draw every n frames a different mask (picked up randomly from the 40
+    % mondrians on each trial)
+    Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.mondrianTexVector(countMond), [], Exp.stimuli.destFrame_left)
+    
+    % Draw the checkerboard    
+    if flp == checkFrames(1)
+        randi = randperm(length(Exp.stimuli.CheckTexs));
+        Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.CheckTexs(randi(1)), [], Exp.stimuli.RightCheck_Right);
+        
+    elseif flp == checkFrames(2)
+        Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.CheckTexs(randi(2)), [], Exp.stimuli.RightCheck_Right);
+    end
+    
+    % Flip stimuli on the screen
+    Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+    % use the mod function for presenting the mondrians 
+    if mod(flp, mondRate) == 0
+       countMond = countMond +1;
+    end
+
+end
+
+
+%% Present the blank interval
+blankInterval = 85;
+for flp =1 : blankInterval
+    % Draw frames for both eyes
+    Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
+    Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
+    % Flip stimuli on the screen
+    Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+end
+
+%% Ask and collect the response
+
+
+
+%% ITI
+randi = randperm(length(ITI));
+for flp =1 : ITI(randi(1))
+    % Draw frames for both eyes
+    Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
+    Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
+    % Flip stimuli on the screen
+    Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+end
+
+

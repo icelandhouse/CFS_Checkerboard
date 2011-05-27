@@ -1,0 +1,127 @@
+function runExp
+
+
+%% Defining parameters
+
+PsychJavaTrouble; % Check there are no problems with Java
+Exp.Cfg.SkipSyncTest = 0; %This should be '0' on a properly working NVIDIA video card. '1' skips the SyncTest.
+Exp.Cfg.AuxBuffers= 1; % '0' if no Auxiliary Buffers available, otherwise put it into '1'.
+% Check for OpenGL compatibility
+AssertOpenGL;
+Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
+
+Exp.Cfg.WinSize= [];  %Empty means whole screen
+Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
+
+Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
+Exp.Cfg.yDimCm = 24.5; %Length in cm of the screen in Y
+Exp.Cfg.distanceCm = 60; %Viewing distance
+
+%% Use Psychophysics
+%C:\Users\John.John-PC\Documents\MATLAB\CFS_Checkerboard
+
+%% Define parameters
+% Exp = parameters_definition (Exp);
+
+
+%% INITIALYZE SCREEN
+Exp = InitializeScreen (Exp);
+
+
+%% Stimuli & Textures creation
+
+stimuliSize = 300;
+% Create Checkerboard
+% im = checkerboard(size,armsR,armsT,cont,mask,sd,inverted)
+check1= checkerboard(stimuliSize, 4, 6, 1, 2, 1, 1); % imshow(check1/255)
+CheckTex1 = Screen('MakeTexture', Exp.Cfg.win, check1);
+check2= checkerboard(stimuliSize, 4, 6, 1, 2, 1, -1);
+CheckTex2 = Screen('MakeTexture', Exp.Cfg.win, check2); %CheckTex2 is a pointer; points to the texture just created;
+Exp.stimuli.CheckTexs = [CheckTex1 CheckTex2];
+
+% Mondrians
+% NumberOfMondrians = 40;
+Exp.stimuli.NumberOfMondrians = 40;
+Exp.stimuli.ArrayOfMondrians = CreateMondrians(Exp.stimuli.NumberOfMondrians, stimuliSize, stimuliSize); %This creates 'NumberOfMondrians' of matrices, to be put into textures
+Exp.stimuli.mondrianTexVector = zeros(length(Exp.stimuli.NumberOfMondrians),1);
+for m = 1:Exp.stimuli.NumberOfMondrians
+    Exp.stimuli.mondrianTexVector(m) = Screen('MakeTexture', Exp.Cfg.win, Exp.stimuli.ArrayOfMondrians{m});
+end
+% imshow(ArrayOfMondrians{1})
+
+%% Create and define frames
+% frameBackground = zeros(stimuliSize,stimuliSize,3);
+width = 25; % in pixels
+frame = rand(stimuliSize + width) * 255;
+%Creating TEXTURE from Frame matrix
+Exp.stimuli.frameTex = Screen('MakeTexture', Exp.Cfg.win, frame);
+
+%% Define positions for the two Frame Backgrounds and the two Masks
+%Defining the two x and y coordinates on which both Frame Backgrounds and Masks
+%will be centered (first is Center Screen Left, second is Center Screen Right)
+xLeft = Exp.Cfg.windowRect(3)/4;
+xRight = Exp.Cfg.windowRect(3)*(3/4);
+yRight = Exp.Cfg.windowRect(4)/2;
+yLeft = Exp.Cfg.windowRect(4)/2;
+x = [xLeft; xRight];
+y = [yLeft; yRight];
+
+
+%Putting Frame Background and Mask TEXTURES into vectors so 'DrawTextures' can put them into screen back buffer
+% frameBackgroundColors = [dotImageRed dotImageGreen]; %Red is 1st in vector so takes 1st x, y coordinates (so will go Screen Left)
+% maskColors = [maskTexGreen maskTexRed]; %Green is 1st in vector so takes 1st x, y coordinates (so will go Screen Left)
+
+%Create rectangles for (1)Frame Backgrounds and Masks, and (2)Frame TEXTURES
+%Feed them into 'CenterRectOnPoint' and get a handle to be fed into 'DrawTextures' to specify rectangle locations for both
+%On-screen rectangle size and location for Frame Backgrounds and Masks
+rect = [0 0 stimuliSize stimuliSize];
+%On-screen rectangle size and location for Frames
+Exp.stimuli.rectFrame= [0 0 length(frame) length(frame)];
+Exp.stimuli.destFrame = CenterRectOnPoint(Exp.stimuli.rectFrame,x,y)';
+Exp.stimuli.newRect = CenterRectOnPoint(rect,x,y)';
+Exp.stimuli.destFrame_right = CenterRectOnPoint(rect, xRight, yRight)';
+Exp.stimuli.destFrame_left = CenterRectOnPoint(rect, xLeft, yLeft)';
+
+%Define the size for checkerboard by defining the on-screen rectangle size in
+%which the checkerboard will be put:
+RectCheck = [0 0 stimuliSize/6 stimuliSize/6]; %Defining it to be n times 
+%smaller than the frame.
+%Define how much smaller than the frame the checkerboard is going to be:
+offCenter = stimulisize/4; % Defining it to be a fraction of the frame size 
+%away from the frame center
+
+%Defining 4 checherboard positions within the left and within the right frame
+%Left side
+Exp.stimuli.LeftCheck_Left = CenterRectOnPoint(RectCheck,(xLeft-offCenter),yLeft);  
+Exp.stimuli.LeftCheck_Right = CenterRectOnPoint(RectCheck,(xLeft+offCenter),yLeft);  
+Exp.stimuli.LeftCheck_Top = CenterRectOnPoint(RectCheck,(xLeft,(yLeft-offCenter));
+Exp.stimuli.LeftCheck_Bottom = CenterRectOnPoint(RectCheck,xLeft,yLeft+offCenter));  
+%Right side
+
+
+%% calibrate stereoscope
+%Draw the frames here:
+Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
+Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
+%Draw fixation point and 'Fixate'
+xy = zeros(2);
+xy(1,:) = x;
+xy(2,:) = y; %This now is a matrix containg two pairs of x,y coordinates to be used by 'DrawDots' to present dots
+Screen('DrawDots', Exp.Cfg.win, xy, [7], [0 0 255], [], [2]);
+Screen('TextSize', Exp.Cfg.win, [18]);
+Screen('DrawText', Exp.Cfg.win, 'Fixate', [x(1)- 45], [y(1) + 5], [0 0 255]);
+Screen('DrawText', Exp.Cfg.win, 'Fixate', [x(2)- 45], [y(2) + 5], [0 0 255]);
+Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+kbwait();
+
+
+%% Run main experiment
+
+for tr =1 : 5 %length(Exp.Trial)
+    Exp = showTrial(Exp, tr); % function to present each trial
+end
+
+sca
+
+
+
