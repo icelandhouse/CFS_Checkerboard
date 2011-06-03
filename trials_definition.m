@@ -1,5 +1,6 @@
 function Exp = trials_definition (Exp)
 
+Exp.totalDuration = [];
 Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
 Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation -mondrians-
 Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
@@ -15,12 +16,12 @@ checkLocation = [1 2 3 4];
 timing = {[39 49 59 69] [32 42 52 62] [36 46 56 66] };
 % timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; % 1, 2, 3
 
-Exp.stimuli.mondrianEyeLocation = 2; % 1: mondrians to the left eye; 2: mondrians to the righ eye
+Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 
 repetitions= 2; % repetition of the minimun design -one trial per condition-
 
 % Create the block of 84 trials
-Trial = zeros(length(contrast) * length(timing) * length (checkLocation), 7);
+Trial = zeros(length(contrast) * length(timing) * length (checkLocation), 8);
 count = 1;
 for m= 1 : length(contrast)
     for j = 1 : length(timing) % timing conditions
@@ -34,6 +35,7 @@ for m= 1 : length(contrast)
             Trial(count, 5) = j; % code for the timing conditions
             Trial(count, 6) = k; % location of the checkerboard
             Trial(count, 7) = 0; %  responses for locations
+            Trial(count, 8) = 0; %  responses for subjective visibility
             count = count + 1; 
         end
     end

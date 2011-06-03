@@ -17,7 +17,7 @@ Exp.Cfg.AuxBuffers= 1; % '0' if no Auxiliary Buffers available, otherwise put it
 AssertOpenGL;
 Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
 
-Exp.Cfg.WinSize= [0 0 1000 500];  %Empty means whole screen
+Exp.Cfg.WinSize= [];  %Empty means whole screen
 Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
 
 Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X
@@ -29,7 +29,7 @@ Exp.addParams.textColor = [0 0 255];
 Exp.stimuli.checkSize = 3; % IN DEGREES
 Exp.stimuli.checkOffcenter = 2;
 Exp.stimuli.arrowSize = 2;% IN DEGREES
-Exp.stimuli.arrowOffcenter = 2;
+Exp.stimuli.arrowOffcenter = 1.5; %IN DEGREES
 Exp.stimuli.frameSize = 8;
 
 Exp.addParams.exitKey = 'o';
@@ -44,7 +44,7 @@ Exp = InitializeScreen (Exp);
 Exp = trials_definition (Exp);
 
 %% Stimuli & Textures creation
-Exp.stimuli.frameSize = Exp.stimuli.frameSize * Exp.Cfg.pixelsPerDegree; % frames in pixels 
+Exp.stimuli.frameSize = ceil(Exp.stimuli.frameSize * Exp.Cfg.pixelsPerDegree); % frames in pixels 
 
 % Mondrians
 Exp.stimuli.NumberOfMondrians = 40;
@@ -138,9 +138,10 @@ kbwait();
 %% Run main experiment
 
 HideCursor;
-% ListenChar(0);
-% Priority(1); %Set Maximun Priority to Window win
+ListenChar(0);
+Priority(1); %Set Maximun Priority to Window win
 
+time1 = GetSecs();
 for tr =1 : size(Exp.Trial, 1)
     Exp = showTrial(Exp, tr); % function to present each trial
     % Elegant exit
@@ -150,11 +151,14 @@ for tr =1 : size(Exp.Trial, 1)
     end
 end
 
+time2 = GetSecs();
+Exp.totalDuration = time2 - time1; % total duration of the experiment in seconds
+
 %Save results
 save(Exp.Gral.SubjectName, 'Exp')
 
 %% Shut down
-% Priority(0);
+Priority(0);
 Screen('CloseAll');
 sca
 ShowCursor;
@@ -165,5 +169,9 @@ catch % ME1
 %     rethrow(ME1);
     rethrow(psychlasterror);
 end
+
+%% HISTORY
+
+% 02/06/2011    LK. Calculated the total duration of each block
 
 
