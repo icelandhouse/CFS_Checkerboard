@@ -1,6 +1,6 @@
 Things to do:
 
--1. Redefine contrast values to: 4, 12, 16, 24, 64, 96
+-1. Redefine contrast values to: 4, 12, 16, 24, 64, 96. Create the appropriate block of trials
 
 -2. Change question order: 
 1st appear the arrows; 
