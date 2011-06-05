@@ -1,5 +1,6 @@
 function Exp = showTrial(Exp, tr)
 
+
 % Create Checkerboard
 % im = checkerboard(size,armsR,armsT,cont,mask,sd,inverted)
 check1= checkerboard(Exp.stimuli.frameSize, 4, 6, Exp.Trial(tr, 3), 1, 1, 1, Exp.Cfg.Color.inc);
@@ -23,11 +24,16 @@ for flp = 1 : Exp.stimuli.stimDur
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
     % Select the eye to present the mondrians
+    
     if Exp.stimuli.mondrianEyeLocation == 1
+        
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
-        Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
+        if flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
+            Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_left)
+        end
+
         % Draw the checkerboard
         if flp == Exp.Trial(tr, 4)
             randi = randperm(length(Exp.stimuli.CheckTexs));
@@ -66,13 +72,16 @@ for flp = 1 : Exp.stimuli.stimDur
         end
 
     elseif Exp.stimuli.mondrianEyeLocation == 2
+        
         % Draw the mondrians
         % Draw every n frames a different mask (picked up randomly from the 40
         % mondrians on each trial)
         Screen('DrawTextures', Exp.Cfg.win, indxs(countMond), [], Exp.stimuli.destFrame_right)
+        
         if flp == Exp.Trial(tr, 4)
-            randi = randperm(length(Exp.stimuli.CheckTexs));
+            
             % Draw the checkerboard on the correct location
+            randi = randperm(length(Exp.stimuli.CheckTexs));
             switch Exp.Trial(tr, 6)
                 case {1}
                     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.CheckTexs(randi(1)), ...
@@ -114,25 +123,26 @@ for flp = 1 : Exp.stimuli.stimDur
     Screen('FillOval', Exp.Cfg.win, [255 0 0], FixdotDims);
 
 
-
     % Flip stimuli on the screen
-    Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
-    %     if flp == checkFrames(1) || flp == checkFrames(2)
-    %         KbWait()
-    %         WaitSecs(0.5)
-    %     end
+    [VBLTimestamp StimulusOnsetTime FlipTimestamp Missed Beampos]= ...
+        Screen('Flip', Exp.Cfg.win, [], Exp.Cfg.AuxBuffers);
+    
+    % Keep all timing information for posterior check
+    Exp.expinfo(tr).timing(flp,1:6)= [1, VBLTimestamp, ...
+        StimulusOnsetTime, FlipTimestamp, Missed, Beampos];
 
     % use the mod function for presenting the mondrians
-    if mod(flp, Exp.stimuli.mondrianRate) == 0
-        countMond = countMond +1;
+    if  flp >= Exp.stimuli.mondrianTiming(1) && flp <= Exp.stimuli.mondrianTiming(end)
+        if mod(flp, Exp.stimuli.mondrianRate) == 0
+            countMond = countMond +1;
+        end
     end
 
 end
 
 
 %% Present the blank interval
-blankInterval = 15;
-for flp =1 : blankInterval
+for flp =1 : Exp.addParams.blankInterval
     % Draw frames for both eyes
     Screen('DrawTextures', Exp.Cfg.win, Exp.stimuli.frameTex, [], Exp.stimuli.destFrame);
     Screen('FillRect', Exp.Cfg.win, Exp.Cfg.Color.inc, Exp.stimuli.newRect);
@@ -212,6 +222,7 @@ else
     return
 end
 
+% Wait until the button is released
 while keyIsDown
     keyIsDown = KbCheck;
     WaitSecs(0.01);
@@ -294,10 +305,12 @@ while (RTflag==0)
     end
 end
 
+% Wait until the button is released
 while keyIsDown
     keyIsDown = KbCheck;
     WaitSecs(0.01);
 end
+
 %% ITI
 randi = randperm(length(Exp.stimuli.ITI));
 for flp =1 : Exp.stimuli.ITI(randi(1))

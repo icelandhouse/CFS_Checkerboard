@@ -1,26 +1,30 @@
 function Exp = trials_definition (Exp)
 
+
 Exp.totalDuration = [];
 Exp.stimuli.randomTrials = 1; % 1 randomize, 0 do not randomize trials
-Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation -mondrians-
-Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
-% mondrianChanges= 1:10:100;
+Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation period
 Exp.stimuli.ITI = [21 42 63 85];
 
-Exp.stimuli.stimDur = 85;
+%% parameters for mondrians
+Exp.simuli.mondrianStart= 1;
+Exp.simuli.mondrianEnd= 100;
+Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
+Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
+Exp.stimuli.mondrianTiming = Exp.simuli.mondrianStart:Exp.stimuli.mondrianRate:Exp.simuli.mondrianEnd;
 
-% nTrials = 48; % trials per condition
-contrast = [0.02 0.04 0.08 0.16 0.32 0.64 0.96]; % michelson contrast 
+%% parameters for the checkerboard
+
+contrast = [0.04 0.12 0.16 0.24 0.64 0.96]; % michelson contrast 
 checkLocation = [1 2 3 4];
 % locations = 1: up; 2: down; 3: Left; 4: right;
 timing = {[39 49 59 69] [32 42 52 62] [36 46 56 66] };
 % timingConds = { 'backwardMasking' 'forwardMasking' 'middleMasking'}; % 1, 2, 3
 
-Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 
 repetitions= 2; % repetition of the minimun design -one trial per condition-
 
-% Create the block of 84 trials
+% Create the block trials
 Trial = zeros(length(contrast) * length(timing) * length (checkLocation), 8);
 count = 1;
 for m= 1 : length(contrast)
