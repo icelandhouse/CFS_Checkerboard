@@ -1,9 +1,8 @@
-function analyze_Accuracy
+function analyze_Accuracy (fileName, inDir, outDir)
 
-inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-outDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
-
-fileName = 'Data_3subjs';
+% inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+% outDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+% fileName = 'Data_3subjs_06062011';
 
 load ([inDir fileName])
 
@@ -38,13 +37,18 @@ for subj = 1: length(subjects)
     end
 end
 
-cols = {'0.02' '0.04' '0.08' '0.16' '0.32' '0.64' '0.96'};
-rows = {'backward' 'forward' 'middle'};
-accuracies_means = mean(accuracies, 3);
-accuracies_std = std(accuracies, 0, 3);
-accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));
-save([outDir 'Accuracies_3subjs'], 'accuracies', 'accuracies_means', 'accuracies_std', 'accuracies_sems', ...
-    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts')
+for m=1: length(all_contrasts)
+    cols{m} = num2str(all_contrasts(m)); %#ok
+end
+
+% cols= {'0.04' '0.04' '0.08' '0.16' '0.32' '0.64' '0.96'};
+rows = {'backward' 'forward' 'middle'}; %#ok
+
+accuracies_means = mean(accuracies, 3);%#ok
+accuracies_std = std(accuracies, 0, 3);%#ok
+accuracies_sems = std(accuracies,0, 3) / sqrt(size(accuracies, 3));%#ok
+save([outDir fileName], 'accuracies', 'accuracies_means', 'accuracies_std', 'accuracies_sems', ...
+    'rows', 'cols', 'timing_conditions', 'subjects', 'all_contrasts', '-append')
 
 
 

@@ -1,17 +1,30 @@
 function analyze_concatenateData
 
-inDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/';
-outDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+rawDataDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data/';
+resultsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Data_results/';
+figsDir = '/home/lisandro/Work/Project_CFS/CFS_Checkerboard/Figures/';
 
-files = dir([inDir 'S*.mat']);
+fileName = 'Data_02062011'; % DEFINE THE NAME TO SAVE THE FILE
+files = dir([rawDataDir 'S*02062011*.mat']);
 displayFiles (files)
+
 
 Data = [];
 for fi = 1: length(files)
-    load ( [inDir files(fi).name] ) 
+    load ( [rawDataDir files(fi).name] )
     Data = cat(1,Data, Exp.Trial);
     clear Exp
 end
 
-save([outDir 'Data_3subjs'], 'Data')
-    
+save([resultsDir fileName], 'Data')
+
+
+%% Analyze accuracy
+
+analyze_Accuracy (fileName, resultsDir, resultsDir)
+
+%% Plot Results
+
+analyze_plotAccuracies (fileName, resultsDir, figsDir)
+
+

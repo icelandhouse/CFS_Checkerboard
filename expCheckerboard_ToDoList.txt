@@ -2,35 +2,18 @@ Things to do:
 
 Redefine contrast values to: 4, 12, 16, 24, 64, 96. Create the appropriate block of trials. UNIT TEST!!
 
--7. Check that computer hardware is functioning properly - i.e. - that flips are not missed. Use Profiler
-
-
 -6. Program practice trials: WITH AND WITHOUT MONDRIANS
 
 
 % HISTORY
 
-Change question order: 
-1st appear the arrows; 
-2nd appear 'yes'/'no'  	%#OK
+-- Change question order: 1st appear the arrows; 2nd appear 'yes'/'no'  	%#OK
 
-2 is done! I swapped the subjective and objective response sections in showTrial.
-I also added:
-the while keyIsDown loop in lines 297-300 so the program waits for key release before going into ITI.
-the fixation dot for the 'yes'/'no' screen in lines 225-228 in showTrial 	%#OK
+-- Radomize location of 'yes'/'no': sometimes left/right, sometimes right/left. 
+    Added the decoding of responses depending on whether it is 'yes'/'no' OR 'no'/'yes'
 
-
--3. Radomize location of 'yes'/'no': sometimes left/right, sometimes right/left. 
-
-3 is done! I did this in Lines 230 - 241 of showTrial. 	%#OK
-
-
--4. Add the decoding of responses depending on whether it is 'yes'/'no' OR 'no'/'yes'.  
-
-4 is done! I did this in Lines 264 & 270-280 of showTrial. %#OK
-
-
--5. Create text file with instructions for running the experiment (e.g., set monitor refresh rate to 100Hz, etc.) %#OK
+-- Create text file with instructions for running the experiment (e.g., set monitor refresh rate to 100Hz, etc.) %#OK
 
 -- Program the backward, forward and middle masking conditions 		%#OK
 
+-- Checkeed that computer hardware is functioning properly - i.e. - that flips are not missed. Use Profiler  %#OK

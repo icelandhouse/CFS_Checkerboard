@@ -17,7 +17,7 @@ try
     AssertOpenGL;
     Screen('Preference','SkipSyncTests', Exp.Cfg.SkipSyncTest);
 
-    Exp.Cfg.WinSize= [0 0 1000 500];  %Empty means whole screen
+    Exp.Cfg.WinSize= [];  %Empty means whole screen
     Exp.Cfg.WinColor= []; % empty for the middle gray of the screen.
 
     Exp.Cfg.xDimCm = 32.5; %Length in cm of the screen in X

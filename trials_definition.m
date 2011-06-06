@@ -7,8 +7,8 @@ Exp.stimuli.stimDur = 100; %total number of frames for the stimuli presentation 
 Exp.stimuli.ITI = [21 42 63 85];
 
 %% parameters for mondrians
-Exp.simuli.mondrianStart= 1;
-Exp.simuli.mondrianEnd= 100;
+Exp.simuli.mondrianStart= 1; % frame number to start showing mondrians
+Exp.simuli.mondrianEnd= 100; % frame number to stop showing mondrians
 Exp.stimuli.mondrianRate = 10; % numbers of frames to present each mondrian
 Exp.stimuli.mondrianEyeLocation = 1; % 1: mondrians to the left eye; 2: mondrians to the righ eye
 Exp.stimuli.mondrianTiming = Exp.simuli.mondrianStart:Exp.stimuli.mondrianRate:Exp.simuli.mondrianEnd;
